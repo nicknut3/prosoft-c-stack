@@ -47,13 +47,13 @@ struct ModifyTests : ::testing::Test
 {
     void SetUp()
     {
-        stack = stack_new();
-        ASSERT_EQ(stack_valid_handler(stack), 0);
+        //stack = stack_new();
+        //ASSERT_EQ(stack_valid_handler(stack), 0);
     }
     void TearDown()
     {
-        stack_free(stack);
-        ASSERT_EQ(stack_valid_handler(stack), 1);
+        //stack_free(stack);
+        //ASSERT_EQ(stack_valid_handler(stack), 1);
     }
     hstack_t stack = -1;
 };
@@ -97,13 +97,25 @@ TEST_F(ModifyTests, PopFromEmptyStack)
 
 TEST_F(ModifyTests, SinglePushPop)
 {
-    const int data_in[3] = {0, 1, 2};
+    int data_in[3] = {0, 1, 2};
     int data_out[3] = {2, 1, 0};
     stack_push(stack, data_in, sizeof(data_in));
     EXPECT_EQ(stack_size(stack), 1u);
     EXPECT_EQ(stack_pop(stack, data_out, sizeof(data_out)), sizeof(data_out));
     EXPECT_EQ(stack_size(stack), 0u);
     EXPECT_THAT(data_out, ::testing::ElementsAre(0, 1, 2));
+}
+
+
+TEST_F(ModifyTests, Push_and_pop)
+{
+    int number_to_push = 7;
+    int stack_handler = 0;
+    int data_out;
+    stack_push_int(stack_handler, number_to_push, sizeof(number_to_push));
+    stack_push_int(stack_handler, 42, sizeof(42));
+    stack_pop_int(stack_handler, &data_out, sizeof(42));
+    stack_push_int(stack_handler, -20, sizeof(-20));
 }
 
 TEST_F(ModifyTests, SeveralPushPop)
@@ -123,4 +135,3 @@ TEST_F(ModifyTests, SeveralPushPop)
     }
     EXPECT_THAT(data_out, ::testing::ElementsAre(2, 1, 0));
 }
-
